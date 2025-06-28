@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Tracking System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #fff5f7;
+            color: #555;
+        }
+        h1 {
+            color: #d63384;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .products-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .product-card {
+            background-color: white;
+            border: 1px solid #ffdeeb;
+            border-radius: 12px;
+            padding: 15px;
+            width: 280px;
+            box-shadow: 0 4px 8px rgba(214, 51, 132, 0.1);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(214, 51, 132, 0.15);
+        }
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background-color: #f06595;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .product-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ffdeeb;
+        }
+        .product-name {
+            font-weight: bold;
+            margin: 10px 0;
+            font-size: 18px;
+            color: #d63384;
+        }
+        .product-info {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .quantity-info {
+            background-color: #fff0f6;
+            padding: 8px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px dashed #fcc2d7;
+        }
+        .buttons-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            gap: 5px;
+        }
+        .sell-btn {
+            background-color: #40c057;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            flex: 1;
+            font-weight: 500;
+        }
+        .return-btn {
+            background-color: #f06595;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            flex: 1;
+            font-weight: 500;
+        }
+        .donate-btn {
+            background-color: #f783ac;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            flex: 1;
+            font-weight: 500;
+        }
+        .stats {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(214, 51, 132, 0.1);
+            border: 1px solid #ffdeeb;
+        }
+        .stats h2 {
+            color: #d63384;
+            margin-top: 0;
+            border-bottom: 2px solid #ffdeeb;
+            padding-bottom: 10px;
+        }
+        .add-product-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(214, 51, 132, 0.1);
+            border: 1px solid #ffdeeb;
+        }
+        .add-product-form h2 {
+            color: #d63384;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #d63384;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ffdeeb;
+            border-radius: 6px;
+            box-sizing: border-box;
+            background-color: #fff9fb;
+        }
+        input:focus {
+            outline: none;
+            border-color: #f783ac;
+            box-shadow: 0 0 0 3px rgba(247, 131, 172, 0.2);
+        }
+        .add-btn {
+            background-color: #f783ac;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        .add-btn:hover {
+            background-color: #f06595;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 150px;
+            margin-top: 10px;
+            display: none;
+            border-radius: 6px;
+            border: 1px solid #ffdeeb;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: #ffdeeb;
+            cursor: pointer;
+            border-radius: 6px;
+            color: #d63384;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .tab:hover {
+            background-color: #fcc2d7;
+        }
+        .tab.active {
+            background-color: #d63384;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(214, 51, 132, 0.4);
+            backdrop-filter: blur(2px);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 25px;
+            border: 1px solid #ffdeeb;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(214, 51, 132, 0.2);
+        }
+        .modal h3 {
+            color: #d63384;
+            margin-top: 0;
+        }
+        .modal p {
+            margin-bottom: 25px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .confirm-btn {
+            background-color: #f06595;
+            color: white;
+        }
+        .confirm-btn:hover {
+            background-color: #d63384;
+        }
+        .cancel-btn {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        .cancel-btn:hover {
+            background-color: #dee2e6;
+        }
+        .profit-positive {
+            color: #40c057;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>hanoooon shop</h1>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="openTab('stats')">Statistics</div>
+        <div class="tab" onclick="openTab('products')">Products</div>
+        <div class="tab" onclick="openTab('add')">Add Product</div>
+    </div>
+    
+    <div id="stats" class="tab-content active">
+        <div class="stats">
+            <h2>Sales Statistics</h2>
+            <p>Total Profit: <span id="total-profit" class="profit-positive">0</span> $</p>
+            <p>Total Sales: <span id="total-sales">0</span></p>
+            <p>Total Donations: <span id="total-donations">0</span></p>
+        </div>
+    </div>
+    
+    <div id="products" class="tab-content">
+        <div class="products-container" id="products-container">
+            <!-- Products will appear here -->
+        </div>
+    </div>
+    
+    <div id="add" class="tab-content">
+        <div class="add-product-form">
+            <h2>Add New Product</h2>
+            <div class="form-group">
+                <label for="product-name">Product Name:</label>
+                <input type="text" id="product-name" placeholder="Enter product name">
+            </div>
+            <div class="form-group">
+                <label for="product-image">Product Image:</label>
+                <input type="file" id="product-image" accept="image/*">
+                <img id="image-preview" class="image-preview" alt="Image preview">
+            </div>
+            <div class="form-group">
+                <label for="product-cost">Cost Price:</label>
+                <input type="number" id="product-cost" placeholder="Enter cost price">
+            </div>
+            <div class="form-group">
+                <label for="product-price">Selling Price:</label>
+                <input type="number" id="product-price" placeholder="Enter selling price">
+            </div>
+            <div class="form-group">
+                <label for="product-quantity">Initial Quantity:</label>
+                <input type="number" id="product-quantity" placeholder="Enter initial quantity">
+            </div>
+            <button class="add-btn" onclick="addProduct()">Add Product</button>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm Deletion</h3>
+            <p>Are you sure you want to delete this product?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn confirm-btn" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // System variables
+        let products = [];
+        let totalProfit = 0;
+        let totalSales = 0;
+        let totalDonations = 0;
+        let productToDelete = null;
+        
+        // Open tabs
+        function openTab(tabName) {
+            const tabs = document.getElementsByClassName('tab');
+            const tabContents = document.getElementsByClassName('tab-content');
+            
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+                tabContents[i].classList.remove('active');
+            }
+            
+            document.querySelector(`.tab[onclick="openTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+        
+        // Image preview before upload
+        document.getElementById('product-image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('image-preview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Update statistics
+        function updateStats() {
+            document.getElementById('total-profit').textContent = totalProfit;
+            document.getElementById('total-sales').textContent = totalSales;
+            document.getElementById('total-donations').textContent = totalDonations;
+        }
+        
+        // Display products
+        function displayProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            
+            products.forEach((product, index) => {
+                const profitPerItem = product.price - product.cost;
+                const soldQuantity = product.initialQuantity - product.quantity;
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                productCard.innerHTML = `
+                    <button class="delete-btn" onclick="showDeleteModal(${index})">×</button>
+                    <img src="${product.image || 'https://via.placeholder.com/150'}" alt="${product.name}" class="product-image">
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-info">Cost: $${product.cost}</div>
+                    <div class="product-info">Price: $${product.price}</div>
+                    <div class="product-info">Profit per item: $${profitPerItem}</div>
+                    <div class="quantity-info">
+                        <div>Initial Quantity: ${product.initialQuantity}</div>
+                        <div>Sold: ${soldQuantity}</div>
+                        <div>Remaining: <span id="quantity-${index}">${product.quantity}</span></div>
+                    </div>
+                    <div class="buttons-container">
+                        <button class="sell-btn" onclick="sellProduct(${index})">Sell</button>
+                        <button class="donate-btn" onclick="donateProduct(${index})">Donate</button>
+                        <button class="return-btn" onclick="returnProduct(${index})">Return</button>
+                    </div>
+                `;
+                
+                container.appendChild(productCard);
+            });
+        }
+        
+        // Sell product
+        function sellProduct(index) {
+            if (products[index].quantity > 0) {
+                products[index].quantity--;
+                const profitPerItem = products[index].price - products[index].cost;
+                totalProfit += profitPerItem;
+                totalSales++;
+                
+                updateStats();
+                document.getElementById(`quantity-${index}`).textContent = products[index].quantity;
+                saveData();
+            } else {
+                alert('No available quantity for this product!');
+            }
+        }
+        
+        // Return product
+        function returnProduct(index) {
+            if (products[index].quantity < products[index].initialQuantity) {
+                products[index].quantity++;
+                const profitPerItem = products[index].price - products[index].cost;
+                
+                // Determine if returning from sales or donations
+                const soldQuantity = products[index].initialQuantity - products[index].quantity;
+                const originalSold = (products[index].initialQuantity - (products[index].quantity - 1));
+                
+                if (originalSold > soldQuantity) {
+                    // Return from sales
+                    totalProfit -= profitPerItem;
+                    totalSales--;
+                } else {
+                    // Return from donations
+                    totalDonations--;
+                }
+                
+                updateStats();
+                document.getElementById(`quantity-${index}`).textContent = products[index].quantity;
+                saveData();
+            } else {
+                alert('Cannot return more than initial quantity!');
+            }
+        }
+        
+        // Donate product
+        function donateProduct(index) {
+            if (products[index].quantity > 0) {
+                products[index].quantity--;
+                totalDonations++;
+                
+                updateStats();
+                document.getElementById(`quantity-${index}`).textContent = products[index].quantity;
+                saveData();
+            } else {
+                alert('No available quantity for this product!');
+            }
+        }
+        
+        // Show delete confirmation modal
+        function showDeleteModal(index) {
+            productToDelete = index;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            productToDelete = null;
+        }
+        
+        // Confirm deletion
+        function confirmDelete() {
+            if (productToDelete !== null) {
+                products.splice(productToDelete, 1);
+                displayProducts();
+                saveData();
+                closeModal();
+            }
+        }
+        
+        // Add new product
+        function addProduct() {
+            const name = document.getElementById('product-name').value;
+            const imageInput = document.getElementById('product-image');
+            const cost = parseFloat(document.getElementById('product-cost').value);
+            const price = parseFloat(document.getElementById('product-price').value);
+            const initialQuantity = parseInt(document.getElementById('product-quantity').value);
+            
+            if (name && !isNaN(cost) && !isNaN(price) && !isNaN(initialQuantity)) {
+                // Process image
+                let imageSrc = 'https://via.placeholder.com/150';
+                if (imageInput.files && imageInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imageSrc = e.target.result;
+                        addProductToArray(name, imageSrc, cost, price, initialQuantity);
+                    };
+                    reader.readAsDataURL(imageInput.files[0]);
+                } else {
+                    addProductToArray(name, imageSrc, cost, price, initialQuantity);
+                }
+            } else {
+                alert('Please enter all data correctly!');
+            }
+        }
+        
+        function addProductToArray(name, imageSrc, cost, price, initialQuantity) {
+            products.push({
+                name,
+                image: imageSrc,
+                cost,
+                price,
+                initialQuantity,
+                quantity: initialQuantity
+            });
+            
+            // Clear input fields
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-image').value = '';
+            document.getElementById('product-cost').value = '';
+            document.getElementById('product-price').value = '';
+            document.getElementById('product-quantity').value = '';
+            document.getElementById('image-preview').style.display = 'none';
+            
+            displayProducts();
+            openTab('products');
+            saveData();
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('salesTrackerProducts', JSON.stringify(products));
+            localStorage.setItem('salesTrackerProfit', totalProfit.toString());
+            localStorage.setItem('salesTrackerSales', totalSales.toString());
+            localStorage.setItem('salesTrackerDonations', totalDonations.toString());
+        }
+        
+        // Load data from localStorage
+        function loadData() {
+            const savedProducts = localStorage.getItem('salesTrackerProducts');
+            const savedProfit = localStorage.getItem('salesTrackerProfit');
+            const savedSales = localStorage.getItem('salesTrackerSales');
+            const savedDonations = localStorage.getItem('salesTrackerDonations');
+            
+            if (savedProducts) {
+                products = JSON.parse(savedProducts);
+            }
+            
+            if (savedProfit) {
+                totalProfit = parseFloat(savedProfit);
+            }
+            
+            if (savedSales) {
+                totalSales = parseInt(savedSales);
+            }
+            
+            if (savedDonations) {
+                totalDonations = parseInt(savedDonations);
+            }
+            
+            updateStats();
+            displayProducts();
+        }
+        
+        // Load data on startup
+        window.onload = loadData;
+    </script>
+</body>
+</html>
